@@ -25,7 +25,7 @@ model User {
     phoneNumber   String   @map("phone_number")
     country       String
     birthDate     DateTime @map("birth_data")
-    biologicalSex Sex      @default(Male)
+    biologicalSex Sex      @default(MALE)
 
     appointments Appointment[]
     reviews      Review[]
@@ -34,8 +34,8 @@ model User {
 }
 
 enum Sex {
-    Male
-    Female
+    MALE
+    FEMALE
 }
 
 model Doctor {
@@ -47,16 +47,16 @@ model Doctor {
     verificationStatus Boolean @default(true) @map("verification_status")
     country            String
     speciality         String
-    consultations      Int     @default(0)
+    consultations      Int?    @default(0)
     experianceYears    Float   @map("experiance_years")
     about              String
-    score              Float   @default(0)
+    score              Float?  @default(0)
 
     appointments   Appointment[]
     experiences    Experience[]
     educations     Education[]
     certifications Certification[]
-    doctorServices DoctorService[]
+    doctorServices DoctorServe[]
     doctorDiseases DoctorDisease[]
     reviews        Review[]
 
@@ -66,35 +66,35 @@ model Doctor {
 model Appointment {
     id String @id @default(cuid())
 
-    user     User   @relation(fields: [userID], references: [id])
-    userID   String @map("user_id")
+    user     User   @relation(fields: [userId], references: [id])
+    userId   String @map("user_id")
     doctor   Doctor @relation(fields: [doctorId], references: [id])
     doctorId String @map("doctor_id")
 
-    userFirstName    String             @map("user_first_name")
-    userSecondName   String             @map("user_second_name")
-    doctorFirstName  String             @map("doctor_first_name")
-    doctorSecondName String             @map("doctor_second_name")
-    data             DateTime
-    timeStart        DateTime           @map("time_start")
-    timeEnd          DateTime           @map("time_end")
-    adress           String?
+    userFirstName    String              @map("user_first_name")
+    userSecondName   String              @map("user_second_name")
+    doctorFirstName  String              @map("doctor_first_name")
+    doctorSecondName String              @map("doctor_second_name")
+    date             DateTime
+    timeStart        DateTime            @map("time_start")
+    timeEnd          DateTime            @map("time_end")
+    address          String?
     price            Float
-    type             ConsultationType   @default(Live)
-    status           ConsultationStatus @default(Upcoming)
+    type             ConsultationType?   @default(LIVE)
+    status           ConsultationStatus? @default(UPCOMIN)
 
     @@map("appointment")
 }
 
 enum ConsultationType {
-    Video
-    Live
+    VIDEO
+    LIVE
 }
 
 enum ConsultationStatus {
-    Upcoming
-    Done
-    Cancel
+    UPCOMIN
+    DONE
+    CANCEL
 }
 
 model Experience {
@@ -119,8 +119,8 @@ model Education {
 
     university         String
     faculty            String
-    dataStart          DateTime @map("data_start")
-    dataEnd            DateTime @map("data_end")
+    dateStart          DateTime @map("date_start")
+    dateEnd            DateTime @map("date_end")
     verificationStatus Boolean  @default(true) @map("verification_status")
 
     @@map("education")
@@ -134,33 +134,33 @@ model Certification {
 
     university         String
     faculty            String
-    dataStart          DateTime @map("data_start")
-    dataEnd            DateTime @map("data_end")
+    dateStart          DateTime @map("date_start")
+    dateEnd            DateTime @map("date_end")
     verificationStatus Boolean  @default(true) @map("verification_status")
 
     @@map("certification")
 }
 
-model Service {
+model Serve {
     id String @id @default(cuid())
 
     name  String
     price Float
 
-    doctorServices DoctorService[]
+    doctorServices DoctorServe[]
 
-    @@map("service")
+    @@map("serve")
 }
 
-model DoctorService {
+model DoctorServe {
     id String @id @default(cuid())
 
-    doctor    Doctor  @relation(fields: [doctorId], references: [id])
-    doctorId  String  @map("doctor_id")
-    service   Service @relation(fields: [serviceId], references: [id])
-    serviceId String  @map("service_id")
+    doctor   Doctor @relation(fields: [doctorId], references: [id])
+    doctorId String @map("doctor_id")
+    serve    Serve  @relation(fields: [serveId], references: [id])
+    serveId  String @map("service_id")
 
-    @@map("doctor_service")
+    @@map("doctor_serve")
 }
 
 model Disease {
@@ -187,14 +187,14 @@ model DoctorDisease {
 model Review {
     id String @id @default(cuid())
 
-    user     User   @relation(fields: [userID], references: [id])
-    userID   String @map("user_id")
+    user     User   @relation(fields: [userId], references: [id])
+    userId   String @map("user_id")
     doctor   Doctor @relation(fields: [doctorId], references: [id])
     doctorId String @map("doctor_id")
 
     userFirstName  String   @map("user_first_name")
     userSecondName String   @map("user_second_name")
-    data           DateTime @default(now())
+    date           DateTime @default(now())
     score          Int
     comment        String
 
